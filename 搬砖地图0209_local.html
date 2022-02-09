@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>BANZHUAN交互地图测试</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <style>
+body { margin:0; padding:0; }
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+.map-overlay {
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 17%;
+    top: 0;
+    left: 0;
+    padding: 10px;
+}
+
+.map-overlay .map-overlay-inner {
+    background-color: #fff;
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.map-overlay table {
+    border: none;
+    width: 100%;
+}
+
+.map-overlay h2 {
+    line-height: 24px;
+    display: block;
+    margin: 0 0 10px;
+}
+
+.map-overlay label {
+    font: 16px/18px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+}
+
+.map-overlay .legend .bar {
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(to right, #FCA107, #7F3121);
+}
+
+.map-overlay input {
+    display: inline;
+    vertical-align: middle;
+    margin: 5px;
+    padding: 0;
+}
+
+.map-overlay p.credit {
+   margin: 5px 0 0 0;
+   padding: 0;
+}
+
+    </style>
+</head>
+<body>
+
+
+<div id='map'></div>
+
+<div class='map-overlay'>
+    <div class='map-overlay-inner'>
+        <h2>BANZHUAN地图交互平台</h2>
+        <tr><td><p class="cityfly"> <a href="#" class="citylink0" id="world">BANZHUAN</a> &nbsp;</p>
+         </td></tr> 
+        <tr><td><p class="cityfly">世界尺度: <a href="#" class="citylink1" id="CN">China</a> &nbsp;<a href="#" class="citylink1" id="UK">United Kingdom</a>&nbsp;<a href="#" class="citylink1" id="US">United State</a>&nbsp;<a href="#" class="citylink1" id="GLBY">Colombia</a></p>
+         </td></tr> 
+        <tr><td><p class="cityfly">地区尺度: <a href="#" class="citylink" id="Beijing">Beijing</a> &nbsp;<a href="#" class="citylink" id="Shanghai">Shanghai</a> &nbsp;<a href="#" class="citylink" id="Guangzhou">Guangzhou</a> &nbsp;<a href="#" class="citylink" id="UK">Leicester</a> &nbsp;<a href="#" class="citylink" id="US">Washington</a> &nbsp;<a href="#" class="citylink" id="GLBY">Barranquilla</a> </p>
+         </td></tr>
+        <tr><td><p class="cityfly">城市尺度: <a href="#" class="citylink2" id="Beijing">Beijing</a> &nbsp;<a href="#" class="citylink2" id="Shanghai">Shanghai</a> &nbsp;<a href="#" class="citylink2" id="Guangzhou">Guangzhou</a> </p>
+         </td></tr>
+         </table>
+         <p class="credit">搬砖APP地图交互DEMO——可查看<a href="www.baidu.com">搬砖APP</a>.</p>
+</div>
+</div>
+
+
+
+
+    <script>
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamFja2V5dCIsImEiOiJjamExdDlkY2g5Z3ByMndzNGdidnNxMTJ3In0.apVycIDJ6tcix0mthm3-TQ'; // Put your Mapbox Public Access token here
+
+    // Load a new map in the 'map' HTML div
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/jackeyt/ckzfe7e53000615qkh12ptj4a', // map background layer location
+    center: [116.456, 39.909], // starting position [lng, lat]long=-1.8904; lat=52.4862
+    zoom: 3, // starting zoom
+    pitch: 50 // tilt of the viewpoint in degrees
+    });
+
+
+    map.on('load', function() {
+      // Set global light properties which influence 3D layer shadows
+      map.setLight({color: "#fff", intensity: 0.15, position: [1.15, 210, 30]});
+      // Add standard navigation control
+      map.addControl(new mapboxgl.NavigationControl());
+
+
+
+
+    //====================================================
+//    map.loadImage(
+//    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/location.png',
+//    (error, image) => {
+//    if (error) throw error;
+//
+//    // Add the image to the map style.
+//    map.addImage('location', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('location', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [-1.89, 52.4862]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'location',
+//        'type': 'symbol',
+//        'source': 'location', // reference the data source
+//        'layout': {
+//        'icon-image': 'location', // reference the image
+//        'icon-size': {
+//                             stops: [[8, 0.2], [10, 0.01], [12, 0.0], [16, 0.0]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//======================================================    
+//该部分为zoom=3时的
+//=========================================================================================
+
+    map.loadImage(
+    'CN/BJ/BJ06.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('BJ06', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('BJ06', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [116.456, 39.909]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'BJ06',
+        'type': 'symbol',
+        'source': 'BJ06', // reference the data source
+        'layout': {
+        'icon-image': 'BJ06', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+        
+//=========================================================================================
+    map.loadImage(
+    'CN/BY/BY01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('BY01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('BY01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [104.534, 36.534]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'BY01',
+        'type': 'symbol',
+        'source': 'BY01', // reference the data source
+        'layout': {
+        'icon-image': 'BY01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================   
+    map.loadImage(
+    'CN/EZ/EZ01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('EZ01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('EZ01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [114.791, 30.319]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'EZ01',
+        'type': 'symbol',
+        'source': 'EZ01', // reference the data source
+        'layout': {
+        'icon-image': 'EZ01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'CN/HS/HS01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('HS01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('HS01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [115.862, 37.716]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'HS01',
+        'type': 'symbol',
+        'source': 'HS01', // reference the data source
+        'layout': {
+        'icon-image': 'HS01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+map.loadImage(
+    'CN/GZ/GZ01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('GZ01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('GZ01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+     'properties': {
+        'description':
+        '<strong>评论：</strong><p><a href="www.baidu.com">该图片来源</a></p><p>这里是广州——红砖建筑</a></p>'},
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [113.504, 23.251]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'GZ01',
+        'type': 'symbol',
+        'source': 'GZ01', // reference the data source
+        'layout': {
+        'icon-image': 'GZ01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+map.on('click', 'GZ01', (e) => {
+// Copy coordinates array.
+const coordinates = e.features[0].geometry.coordinates.slice();
+const description = e.features[0].properties.description;
+
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+ 
+new mapboxgl.Popup()
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+});
+ 
+// Change the cursor to a p5ointer when the mouse is over the places layer.
+map.on('mouseenter', 'GZ01', () => {
+map.getCanvas().style.cursor = 'pointer';
+});
+ 
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'GZ01', () => {
+map.getCanvas().style.cursor = '';
+});
+//=========================================================================================
+//=========================================================================================
+    map.loadImage(
+    'CN/JD/JD01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('JD01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('JD01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [117.177, 29.338]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'JD01',
+        'type': 'symbol',
+        'source': 'JD01', // reference the data source
+        'layout': {
+        'icon-image': 'JD01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'CN/JN/JN01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('JN01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('JN01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [117.212, 36.854]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'JN01',
+        'type': 'symbol',
+        'source': 'JN01', // reference the data source
+        'layout': {
+        'icon-image': 'JN01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================  
+    map.loadImage(
+    'CN/KS/KS01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('KS01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('KS01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [120.980, 31.325]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'KS01',
+        'type': 'symbol',
+        'source': 'KS01', // reference the data source
+        'layout': {
+        'icon-image': 'KS01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'CN/LY/LY01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('LY01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('LY01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [112.054, 34.321]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'LY01',
+        'type': 'symbol',
+        'source': 'LY01', // reference the data source
+        'layout': {
+        'icon-image': 'LY01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+ map.loadImage(
+    'CN/SH/SH01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('SH01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('SH01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+     'properties': {
+    'description':
+    '<strong>评论：</strong><p><a href="www.baidu.com">该图片来源</a></p><p>这里是上海——红砖改造项目</a></p>'},
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [121.206, 31.101]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'SH01',
+        'type': 'symbol',
+        'source': 'SH01', // reference the data source
+        'layout': {
+        'icon-image': 'SH01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+    map.on('click', 'SH01', (e) => {
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const description = e.features[0].properties.description;
+
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    new mapboxgl.Popup()
+    .setLngLat(coordinates)
+    .setHTML(description)
+    .addTo(map);
+    });
+
+    // Change the cursor to a p5ointer when the mouse is over the places layer.
+    map.on('mouseenter', 'SH01', () => {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'SH01', () => {
+    map.getCanvas().style.cursor = '';
+    });
+//=========================================================================================
+    map.loadImage(
+    'CN/WH/WH01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('WH01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('WH01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [114.387, 30.670]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'WH01',
+        'type': 'symbol',
+        'source': 'WH01', // reference the data source
+        'layout': {
+        'icon-image': 'WH01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'CN/XY/XY01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('XY01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('XY01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [108.410, 34.873]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'XY01',
+        'type': 'symbol',
+        'source': 'XY01', // reference the data source
+        'layout': {
+        'icon-image': 'XY01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================  
+//==================================================================================
+//==================================================================================
+ map.loadImage('BLS/BLS01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BLS01', image);
+    map.addSource('BLS01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [4.459, 50.512]} }]} });
+    map.addLayer({'id': 'BLS01','type': 'symbol','source': 'BLS01','layout': {'icon-image': 'BLS01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//=========================================================================================
+//==================================================================================
+ map.loadImage('BX/BX01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BX01', image);
+    map.addSource('BX01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-51.366, -15.169]} }]} });
+    map.addLayer({'id': 'BX01','type': 'symbol','source': 'BX01','layout': {'icon-image': 'BX01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('DG/DG01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('DG01', image);
+    map.addSource('DG01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [10.454, 51.360]} }]} });
+    map.addLayer({'id': 'DG01','type': 'symbol','source': 'DG01','layout': {'icon-image': 'DG01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});}); 
+//==================================================================================
+ map.loadImage('GLBY/GLBY01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY01', image);
+    map.addSource('GLBY01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-74.905, 10.998]} }]} });
+    map.addLayer({'id': 'GLBY01','type': 'symbol','source': 'GLBY01','layout': {'icon-image': 'GLBY01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('Iran/Iran01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('Iran01', image);
+    map.addSource('Iran01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [53.676, 32.682]} }]} });
+    map.addLayer({'id': 'Iran01','type': 'symbol','source': 'Iran01','layout': {'icon-image': 'Iran01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('MXG/MXG01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('MXG01', image);
+    map.addSource('MXG01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-102.538, 23.939]} }]} });
+    map.addLayer({'id': 'MXG01','type': 'symbol','source': 'MXG01','layout': {'icon-image': 'MXG01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('NDL/NDL01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('NDL01', image);
+    map.addSource('NDL01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-105.518, 40.006]} }]} });
+    map.addLayer({'id': 'NDL01','type': 'symbol','source': 'NDL01','layout': {'icon-image': 'NDL01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('TG/TG01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('TG01', image);
+    map.addSource('TG01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [101.490, 13.151]} }]} });
+    map.addLayer({'id': 'TG01','type': 'symbol','source': 'TG01','layout': {'icon-image': 'TG01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+//==================================================================================
+ map.loadImage('UK/UK01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK01', image);
+    map.addSource('UK01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature',  'properties': {
+    'description':
+        '<strong>Comment：</strong><p><a href="www.baidu.com">Image source</a></p><p>Red Brick from Leicester</a></p>'},
+    'geometry': {'type': 'Point','coordinates': [-1.121, 52.517]} }]} });
+    map.addLayer({'id': 'UK01','type': 'symbol','source': 'UK01','layout': {'icon-image': 'UK01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+   
+    map.on('click', 'UK01', (e) => {
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const description = e.features[0].properties.description;
+
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    new mapboxgl.Popup()
+    .setLngLat(coordinates)
+    .setHTML(description)
+    .addTo(map);
+    });
+
+    // Change the cursor to a p5ointer when the mouse is over the places layer.
+    map.on('mouseenter', 'UK01', () => {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'UK01', () => {
+    map.getCanvas().style.cursor = '';
+    });
+//==================================================================================
+ map.loadImage('US/US01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US01', image);
+    map.addSource('US01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.378, 52.195]} }]} });
+    map.addLayer({'id': 'US01','type': 'symbol','source': 'US01','layout': {'icon-image': 'US01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('YD/YD01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YD01', image);
+    map.addSource('YD01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [82.735, 21.898]} }]} });
+    map.addLayer({'id': 'YD01','type': 'symbol','source': 'YD01','layout': {'icon-image': 'YD01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+//==================================================================================
+ map.loadImage('YDL/YDL01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YDL01', image);
+    map.addSource('YDL01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [12.623, 41.515]} }]} });
+    map.addLayer({'id': 'YDL01','type': 'symbol','source': 'YDL01','layout': {'icon-image': 'YDL01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+ map.loadImage('YN/YN01.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YN01', image);
+    map.addSource('YN01', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.793, -7.282]} }]} });
+    map.addLayer({'id': 'YN01','type': 'symbol','source': 'YN01','layout': {'icon-image': 'YN01', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+//==================================================================================
+//==================================================================================
+//==================================================================================
+//==================================================================================
+ //==================================================================================
+ //==================================================================================
+//==================================================================================
+ //==================================================================================
+ map.loadImage('BLS/BLS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BLS02', image);
+    map.addSource('BLS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [3.8419999999999996, 50.064]} }]} });
+    map.addLayer({'id': 'BLS02','type': 'symbol','source': 'BLS02','layout': {'icon-image': 'BLS02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BLS/BLS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BLS03', image);
+    map.addSource('BLS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [3.0959999999999996, 50.785]} }]} });
+    map.addLayer({'id': 'BLS03','type': 'symbol','source': 'BLS03','layout': {'icon-image': 'BLS03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BLS/BLS04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BLS04', image);
+    map.addSource('BLS04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [2.7439999999999998, 50.528]} }]} });
+    map.addLayer({'id': 'BLS04','type': 'symbol','source': 'BLS04','layout': {'icon-image': 'BLS04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BLS/BLS05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BLS05', image);
+    map.addSource('BLS05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [2.627, 50.108]} }]} });
+    map.addLayer({'id': 'BLS05','type': 'symbol','source': 'BLS05','layout': {'icon-image': 'BLS05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BX/BX02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BX02', image);
+    map.addSource('BX02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-52.105, -15.860000000000001]} }]} });
+    map.addLayer({'id': 'BX02','type': 'symbol','source': 'BX02','layout': {'icon-image': 'BX02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BX/BX03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BX03', image);
+    map.addSource('BX03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-52.092999999999996, -16.342000000000002]} }]} });
+    map.addLayer({'id': 'BX03','type': 'symbol','source': 'BX03','layout': {'icon-image': 'BX03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BX/BX04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BX04', image);
+    map.addSource('BX04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-51.424, -16.498]} }]} });
+    map.addLayer({'id': 'BX04','type': 'symbol','source': 'BX04','layout': {'icon-image': 'BX04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('BX/BX05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BX05', image);
+    map.addSource('BX05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-50.864, -16.356]} }]} });
+    map.addLayer({'id': 'BX05','type': 'symbol','source': 'BX05','layout': {'icon-image': 'BX05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('DG/DG02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('DG02', image);
+    map.addSource('DG02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [10.941, 51.07]} }]} });
+    map.addLayer({'id': 'DG02','type': 'symbol','source': 'DG02','layout': {'icon-image': 'DG02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('DG/DG03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('DG03', image);
+    map.addSource('DG03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [11.456000000000001, 51.579]} }]} });
+    map.addLayer({'id': 'DG03','type': 'symbol','source': 'DG03','layout': {'icon-image': 'DG03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('DG/DG04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('DG04', image);
+    map.addSource('DG04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [11.869000000000002, 50.805]} }]} });
+    map.addLayer({'id': 'DG04','type': 'symbol','source': 'DG04','layout': {'icon-image': 'DG04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('DG/DG05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('DG05', image);
+    map.addSource('DG05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [12.237000000000002, 51.335]} }]} });
+    map.addLayer({'id': 'DG05','type': 'symbol','source': 'DG05','layout': {'icon-image': 'DG05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('GLBY/GLBY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY02', image);
+    map.addSource('GLBY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-75.235, 10.273]} }]} });
+    map.addLayer({'id': 'GLBY02','type': 'symbol','source': 'GLBY02','layout': {'icon-image': 'GLBY02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('GLBY/GLBY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY03', image);
+    map.addSource('GLBY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-75.089, 10.828]} }]} });
+    map.addLayer({'id': 'GLBY03','type': 'symbol','source': 'GLBY03','layout': {'icon-image': 'GLBY03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('GLBY/GLBY04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY04', image);
+    map.addSource('GLBY04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-74.145, 11.158]} }]} });
+    map.addLayer({'id': 'GLBY04','type': 'symbol','source': 'GLBY04','layout': {'icon-image': 'GLBY04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('GLBY/GLBY05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY05', image);
+    map.addSource('GLBY05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-73.72, 4.2]} }]} });
+    map.addLayer({'id': 'GLBY05','type': 'symbol','source': 'GLBY05','layout': {'icon-image': 'GLBY05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/GLBY/GLBY06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY06', image);
+    map.addSource('GLBY06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-69.873, 7.686]} }]} });
+    map.addLayer({'id': 'GLBY06','type': 'symbol','source': 'GLBY06','layout': {'icon-image': 'GLBY06', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/GLBY/GLBY07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY07', image);
+    map.addSource('GLBY07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-73.199, 9.189]} }]} });
+    map.addLayer({'id': 'GLBY07','type': 'symbol','source': 'GLBY07','layout': {'icon-image': 'GLBY07', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/GLBY/GLBY08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY08', image);
+    map.addSource('GLBY08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-73.255, 9.018]} }]} });
+    map.addLayer({'id': 'GLBY08','type': 'symbol','source': 'GLBY08','layout': {'icon-image': 'GLBY08', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/GLBY/GLBY09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY09', image);
+    map.addSource('GLBY09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-73.745, 6.967]} }]} });
+    map.addLayer({'id': 'GLBY09','type': 'symbol','source': 'GLBY09','layout': {'icon-image': 'GLBY09', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/GLBY/GLBY10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GLBY10', image);
+    map.addSource('GLBY10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-70.636, 4.610]} }]} });
+    map.addLayer({'id': 'GLBY10','type': 'symbol','source': 'GLBY10','layout': {'icon-image': 'GLBY10', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('Iran/Iran02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('Iran02', image);
+    map.addSource('Iran02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [53.882000000000005, 32.145]} }]} });
+    map.addLayer({'id': 'Iran02','type': 'symbol','source': 'Iran02','layout': {'icon-image': 'Iran02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('Iran/Iran03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('Iran03', image);
+    map.addSource('Iran03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [53.306000000000004, 32.053000000000004]} }]} });
+    map.addLayer({'id': 'Iran03','type': 'symbol','source': 'Iran03','layout': {'icon-image': 'Iran03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('Iran/Iran04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('Iran04', image);
+    map.addSource('Iran04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [53.05800000000001, 32.205000000000005]} }]} });
+    map.addLayer({'id': 'Iran04','type': 'symbol','source': 'Iran04','layout': {'icon-image': 'Iran04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('Iran/Iran05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('Iran05', image);
+    map.addSource('Iran05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [53.778000000000006, 32.313]} }]} });
+    map.addLayer({'id': 'Iran05','type': 'symbol','source': 'Iran05','layout': {'icon-image': 'Iran05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('MXG/MXG02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('MXG02', image);
+    map.addSource('MXG02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-102.42999999999999, 23.336]} }]} });
+    map.addLayer({'id': 'MXG02','type': 'symbol','source': 'MXG02','layout': {'icon-image': 'MXG02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('MXG/MXG03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('MXG03', image);
+    map.addSource('MXG03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-102.258, 23.389999999999997]} }]} });
+    map.addLayer({'id': 'MXG03','type': 'symbol','source': 'MXG03','layout': {'icon-image': 'MXG03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('MXG/MXG04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('MXG04', image);
+    map.addSource('MXG04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-102.597, 23.694999999999997]} }]} });
+    map.addLayer({'id': 'MXG04','type': 'symbol','source': 'MXG04','layout': {'icon-image': 'MXG04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('MXG/MXG05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('MXG05', image);
+    map.addSource('MXG05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-102.83099999999999, 23.945999999999998]} }]} });
+    map.addLayer({'id': 'MXG05','type': 'symbol','source': 'MXG05','layout': {'icon-image': 'MXG05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('NDL/NDL02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('NDL02', image);
+    map.addSource('NDL02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-104.807, 39.589]} }]} });
+    map.addLayer({'id': 'NDL02','type': 'symbol','source': 'NDL02','layout': {'icon-image': 'NDL02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('NDL/NDL03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('NDL03', image);
+    map.addSource('NDL03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-104.581, 40.308]} }]} });
+    map.addLayer({'id': 'NDL03','type': 'symbol','source': 'NDL03','layout': {'icon-image': 'NDL03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('NDL/NDL04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('NDL04', image);
+    map.addSource('NDL04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-104.546, 40.644]} }]} });
+    map.addLayer({'id': 'NDL04','type': 'symbol','source': 'NDL04','layout': {'icon-image': 'NDL04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('NDL/NDL05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('NDL05', image);
+    map.addSource('NDL05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-105.343, 41.418]} }]} });
+    map.addLayer({'id': 'NDL05','type': 'symbol','source': 'NDL05','layout': {'icon-image': 'NDL05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('TG/TG02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('TG02', image);
+    map.addSource('TG02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [100.785, 12.497]} }]} });
+    map.addLayer({'id': 'TG02','type': 'symbol','source': 'TG02','layout': {'icon-image': 'TG02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('TG/TG03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('TG03', image);
+    map.addSource('TG03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [100.175, 12.241999999999999]} }]} });
+    map.addLayer({'id': 'TG03','type': 'symbol','source': 'TG03','layout': {'icon-image': 'TG03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('TG/TG04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('TG04', image);
+    map.addSource('TG04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [100.167, 12.120999999999999]} }]} });
+    map.addLayer({'id': 'TG04','type': 'symbol','source': 'TG04','layout': {'icon-image': 'TG04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('TG/TG05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('TG05', image);
+    map.addSource('TG05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [99.967, 12.634999999999998]} }]} });
+    map.addLayer({'id': 'TG05','type': 'symbol','source': 'TG05','layout': {'icon-image': 'TG05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK02', image);
+    map.addSource('UK02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-1.845, 51.906000000000006]} }]} });
+    map.addLayer({'id': 'UK02','type': 'symbol','source': 'UK02','layout': {'icon-image': 'UK02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK03', image);
+    map.addSource('UK03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-2.309, 52.709]} }]} });
+    map.addLayer({'id': 'UK03','type': 'symbol','source': 'UK03','layout': {'icon-image': 'UK03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK04', image);
+    map.addSource('UK04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-2.107, 52.926]} }]} });
+    map.addLayer({'id': 'UK04','type': 'symbol','source': 'UK04','layout': {'icon-image': 'UK04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK05', image);
+    map.addSource('UK05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-1.7470000000000003, 52.502]} }]} });
+    map.addLayer({'id': 'UK05','type': 'symbol','source': 'UK05','layout': {'icon-image': 'UK05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK06', image);
+    map.addSource('UK06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-1.4900000000000002, 52.178000000000004]} }]} });
+    map.addLayer({'id': 'UK06','type': 'symbol','source': 'UK06','layout': {'icon-image': 'UK06', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK07', image);
+    map.addSource('UK07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.8630000000000002, 52.107000000000006]} }]} });
+    map.addLayer({'id': 'UK07','type': 'symbol','source': 'UK07','layout': {'icon-image': 'UK07', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK08', image);
+    map.addSource('UK08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-1.4410000000000003, 52.010000000000005]} }]} });
+    map.addLayer({'id': 'UK08','type': 'symbol','source': 'UK08','layout': {'icon-image': 'UK08', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK09', image);
+    map.addSource('UK09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.8720000000000003, 52.800000000000004]} }]} });
+    map.addLayer({'id': 'UK09','type': 'symbol','source': 'UK09','layout': {'icon-image': 'UK09', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK10', image);
+    map.addSource('UK10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.3340000000000003, 53.07000000000001]} }]} });
+    map.addLayer({'id': 'UK10','type': 'symbol','source': 'UK10','layout': {'icon-image': 'UK10', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK11.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK11', image);
+    map.addSource('UK11', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.1470000000000003, 53.57000000000001]} }]} });
+    map.addLayer({'id': 'UK11','type': 'symbol','source': 'UK11','layout': {'icon-image': 'UK11', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK12.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK12', image);
+    map.addSource('UK12', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.7840000000000003, 52.94200000000001]} }]} });
+    map.addLayer({'id': 'UK12','type': 'symbol','source': 'UK12','layout': {'icon-image': 'UK12', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK13.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK13', image);
+    map.addSource('UK13', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [0.07699999999999974, 53.46800000000001]} }]} });
+    map.addLayer({'id': 'UK13','type': 'symbol','source': 'UK13','layout': {'icon-image': 'UK13', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK14.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK14', image);
+    map.addSource('UK14', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.6520000000000002, 52.47500000000001]} }]} });
+    map.addLayer({'id': 'UK14','type': 'symbol','source': 'UK14','layout': {'icon-image': 'UK14', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/UK/UK15.jpg',(error, image) => {if (error) throw error;
+    map.addImage('UK15', image);
+    map.addSource('UK15', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-0.26500000000000024, 51.513000000000005]} }]} });
+    map.addLayer({'id': 'UK15','type': 'symbol','source': 'UK15','layout': {'icon-image': 'UK15', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US02', image);
+    map.addSource('US02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.49, 52.38]} }]} });
+    map.addLayer({'id': 'US02','type': 'symbol','source': 'US02','layout': {'icon-image': 'US02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US03', image);
+    map.addSource('US03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.818, 52.143]} }]} });
+    map.addLayer({'id': 'US03','type': 'symbol','source': 'US03','layout': {'icon-image': 'US03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US04', image);
+    map.addSource('US04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.473, 52.451]} }]} });
+    map.addLayer({'id': 'US04','type': 'symbol','source': 'US04','layout': {'icon-image': 'US04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US05', image);
+    map.addSource('US05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.291, 52.288000000000004]} }]} });
+    map.addLayer({'id': 'US05','type': 'symbol','source': 'US05','layout': {'icon-image': 'US05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US06', image);
+    map.addSource('US06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.10799999999999, 52.279]} }]} });
+    map.addLayer({'id': 'US06','type': 'symbol','source': 'US06','layout': {'icon-image': 'US06', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US07', image);
+    map.addSource('US07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-118.76199999999999, 52.104000000000006]} }]} });
+    map.addLayer({'id': 'US07','type': 'symbol','source': 'US07','layout': {'icon-image': 'US07', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US08', image);
+    map.addSource('US08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-118.98299999999999, 51.773]} }]} });
+    map.addLayer({'id': 'US08','type': 'symbol','source': 'US08','layout': {'icon-image': 'US08', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US09', image);
+    map.addSource('US09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-119.32099999999998, 51.38]} }]} });
+    map.addLayer({'id': 'US09','type': 'symbol','source': 'US09','layout': {'icon-image': 'US09', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/US/US10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('US10', image);
+    map.addSource('US10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [-118.93799999999999, 51.273]} }]} });
+    map.addLayer({'id': 'US10','type': 'symbol','source': 'US10','layout': {'icon-image': 'US10', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YD/YD02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YD02', image);
+    map.addSource('YD02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [82.368, 32.008]} }]} });
+    map.addLayer({'id': 'YD02','type': 'symbol','source': 'YD02','layout': {'icon-image': 'YD02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YD/YD03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YD03', image);
+    map.addSource('YD03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [82.39999999999999, 31.468000000000004]} }]} });
+    map.addLayer({'id': 'YD03','type': 'symbol','source': 'YD03','layout': {'icon-image': 'YD03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YD/YD04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YD04', image);
+    map.addSource('YD04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [82.032, 31.996000000000002]} }]} });
+    map.addLayer({'id': 'YD04','type': 'symbol','source': 'YD04','layout': {'icon-image': 'YD04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YD/YD05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YD05', image);
+    map.addSource('YD05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [82.244, 31.994000000000003]} }]} });
+    map.addLayer({'id': 'YD05','type': 'symbol','source': 'YD05','layout': {'icon-image': 'YD05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YDL/YDL02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YDL02', image);
+    map.addSource('YDL02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [13.093, 41.624]} }]} });
+    map.addLayer({'id': 'YDL02','type': 'symbol','source': 'YDL02','layout': {'icon-image': 'YDL02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YDL/YDL03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YDL03', image);
+    map.addSource('YDL03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [13.866, 41.599000000000004]} }]} });
+    map.addLayer({'id': 'YDL03','type': 'symbol','source': 'YDL03','layout': {'icon-image': 'YDL03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YDL/YDL04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YDL04', image);
+    map.addSource('YDL04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [13.212, 41.762]} }]} });
+    map.addLayer({'id': 'YDL04','type': 'symbol','source': 'YDL04','layout': {'icon-image': 'YDL04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YDL/YDL05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YDL05', image);
+    map.addSource('YDL05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [12.884, 42.284]} }]} });
+    map.addLayer({'id': 'YDL05','type': 'symbol','source': 'YDL05','layout': {'icon-image': 'YDL05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YN/YN02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YN02', image);
+    map.addSource('YN02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.665, -7.104]} }]} });
+    map.addLayer({'id': 'YN02','type': 'symbol','source': 'YN02','layout': {'icon-image': 'YN02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YN/YN03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YN03', image);
+    map.addSource('YN03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [111.95700000000001, -7.519]} }]} });
+    map.addLayer({'id': 'YN03','type': 'symbol','source': 'YN03','layout': {'icon-image': 'YN03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YN/YN04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YN04', image);
+    map.addSource('YN04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [111.63600000000001, -7.421]} }]} });
+    map.addLayer({'id': 'YN04','type': 'symbol','source': 'YN04','layout': {'icon-image': 'YN04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('YN/YN05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('YN05', image);
+    map.addSource('YN05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.415, -6.79]} }]} });
+    map.addLayer({'id': 'YN05','type': 'symbol','source': 'YN05','layout': {'icon-image': 'YN05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+//================================================================================== 
+//==================================================================================
+
+//==================================================================================
+
+//==================================================================================
+//=========================================================================================
+
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+
+        
+        
+//====================================================
+   
+//    map.loadImage(
+//    'CN/BJ/BJ02.jpg',
+//    (error, image) => {
+//    if (error) throw error;
+//    map.addImage('BJ02', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('BJ02', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [116.8, 40.111]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'BJ02',
+//        'type': 'symbol',
+//        'source': 'BJ02', // reference the data source
+//        'layout': {
+//        'icon-image': 'BJ02', // reference the image
+//        'icon-size': {
+//                             stops: [[1,0],[4, 0.0],[8, 0], [9, 0.2], [14, 0.3], [16, 0.5]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//=========================================================================================
+   
+//    map.loadImage(
+//    'CN/BJ/BJ03.jpg',
+//    (error, image) => {
+//    if (error) throw error;
+//        
+//    map.addImage('BJ03', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('BJ03', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [116.029, 40.8]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'BJ03',
+//        'type': 'symbol',
+//        'source': 'BJ03', // reference the data source
+//        'layout': {
+//        'icon-image': 'BJ03', // reference the image
+//        'icon-size': {
+//                             stops:  [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//=========================================================================================
+   
+//=========================================================================================
+//    map.loadImage(
+//    'CN/BJ/BJ09.jpg',
+//    (error, image) => {
+//    if (error) throw error;
+//    map.addImage('BJ09', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('BJ09', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [116.4, 39.909]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'BJ09',
+//        'type': 'symbol',
+//        'source': 'BJ09', // reference the data source
+//        'layout': {
+//        'icon-image': 'BJ09', // reference the image
+//        'icon-size': {
+//                             stops: [[1,0], [12, 0.2], [14, 0.3], [16, 0.5]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//=========================================================================================        
+
+//==================================================================================
+//==================================================================================
+ //==================================================================================
+ map.loadImage('CN/BJ/BJ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ02', image);
+    map.addSource('BJ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.444, 39.716]} }]} });
+    map.addLayer({'id': 'BJ02','type': 'symbol','source': 'BJ02','layout': {'icon-image': 'BJ02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ03', image);
+    map.addSource('BJ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.47500000000001, 39.775]} }]} });
+    map.addLayer({'id': 'BJ03','type': 'symbol','source': 'BJ03','layout': {'icon-image': 'BJ03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ04', image);
+    map.addSource('BJ04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.676, 39.558]} }]} });
+    map.addLayer({'id': 'BJ04','type': 'symbol','source': 'BJ04','layout': {'icon-image': 'BJ04', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ05', image);
+    map.addSource('BJ05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.798, 39.517]} }]} });
+    map.addLayer({'id': 'BJ05','type': 'symbol','source': 'BJ05','layout': {'icon-image': 'BJ05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ06', image);
+    map.addSource('BJ06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.854, 39.392]} }]} });
+    map.addLayer({'id': 'BJ06','type': 'symbol','source': 'BJ06','layout': {'icon-image': 'BJ06', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ07', image);
+    map.addSource('BJ07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.627, 39.169000000000004]} }]} });
+    map.addLayer({'id': 'BJ07','type': 'symbol','source': 'BJ07','layout': {'icon-image': 'BJ07', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ08', image);
+    map.addSource('BJ08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.499, 38.99100000000001]} }]} });
+    map.addLayer({'id': 'BJ08','type': 'symbol','source': 'BJ08','layout': {'icon-image': 'BJ08', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ09', image);
+    map.addSource('BJ09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.411, 38.99100000000001]} }]} });
+    map.addLayer({'id': 'BJ09','type': 'symbol','source': 'BJ09','layout': {'icon-image': 'BJ09', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BJ/BJ10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ10', image);
+    map.addSource('BJ10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.372, 38.93600000000001]} }]} });
+    map.addLayer({'id': 'BJ10','type': 'symbol','source': 'BJ10','layout': {'icon-image': 'BJ10', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BY/BY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BY02', image);
+    map.addSource('BY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [104.38900000000001, 36.335]} }]} });
+    map.addLayer({'id': 'BY02','type': 'symbol','source': 'BY02','layout': {'icon-image': 'BY02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/BY/BY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BY03', image);
+    map.addSource('BY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [104.257, 36.426]} }]} });
+    map.addLayer({'id': 'BY03','type': 'symbol','source': 'BY03','layout': {'icon-image': 'BY03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/EZ/EZ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('EZ02', image);
+    map.addSource('EZ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.982, 30.113]} }]} });
+    map.addLayer({'id': 'EZ02','type': 'symbol','source': 'EZ02','layout': {'icon-image': 'EZ02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/EZ/EZ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('EZ03', image);
+    map.addSource('EZ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.834, 30.233999999999998]} }]} });
+    map.addLayer({'id': 'EZ03','type': 'symbol','source': 'EZ03','layout': {'icon-image': 'EZ03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ02', image);
+    map.addSource('GZ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.329, 23.316000000000003]} }]} });
+    map.addLayer({'id': 'GZ02','type': 'symbol','source': 'GZ02','layout': {'icon-image': 'GZ02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ03', image);
+    map.addSource('GZ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.148, 23.339000000000002]} }]} });
+    map.addLayer({'id': 'GZ03','type': 'symbol','source': 'GZ03','layout': {'icon-image': 'GZ03', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ04', image);
+    map.addSource('GZ04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.24199999999999, 23.375000000000004]} }]} });
+    map.addLayer({'id': 'GZ04','type': 'symbol','source': 'GZ04','layout': {'icon-image': 'GZ04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ05', image);
+    map.addSource('GZ05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.389, 23.572000000000003]} }]} });
+    map.addLayer({'id': 'GZ05','type': 'symbol','source': 'GZ05','layout': {'icon-image': 'GZ05', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ06', image);
+    map.addSource('GZ06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.375, 23.569000000000003]} }]} });
+    map.addLayer({'id': 'GZ06','type': 'symbol','source': 'GZ06','layout': {'icon-image': 'GZ06', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ07', image);
+    map.addSource('GZ07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.342, 23.732000000000003]} }]} });
+    map.addLayer({'id': 'GZ07','type': 'symbol','source': 'GZ07','layout': {'icon-image': 'GZ07', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ08', image);
+    map.addSource('GZ08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.42, 23.942000000000004]} }]} });
+    map.addLayer({'id': 'GZ08','type': 'symbol','source': 'GZ08','layout': {'icon-image': 'GZ08', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ09', image);
+    map.addSource('GZ09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.361, 24.131000000000004]} }]} });
+    map.addLayer({'id': 'GZ09','type': 'symbol','source': 'GZ09','layout': {'icon-image': 'GZ09', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/GZ/GZ10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ10', image);
+    map.addSource('GZ10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.29400000000001, 24.214000000000002]} }]} });
+    map.addLayer({'id': 'GZ10','type': 'symbol','source': 'GZ10','layout': {'icon-image': 'GZ10', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/HS/HS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('HS02', image);
+    map.addSource('HS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.095, 37.857]} }]} });
+    map.addLayer({'id': 'HS02','type': 'symbol','source': 'HS02','layout': {'icon-image': 'HS02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/HS/HS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('HS03', image);
+    map.addSource('HS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [115.962, 37.949]} }]} });
+    map.addLayer({'id': 'HS03','type': 'symbol','source': 'HS03','layout': {'icon-image': 'HS03', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/JD/JD02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD02', image);
+    map.addSource('JD02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.974, 29.407]} }]} });
+    map.addLayer({'id': 'JD02','type': 'symbol','source': 'JD02','layout': {'icon-image': 'JD02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/JD/JD03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD03', image);
+    map.addSource('JD03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.831, 29.47]} }]} });
+    map.addLayer({'id': 'JD03','type': 'symbol','source': 'JD03','layout': {'icon-image': 'JD03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/JD/JD04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD04', image);
+    map.addSource('JD04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.592, 29.531]} }]} });
+    map.addLayer({'id': 'JD04','type': 'symbol','source': 'JD04','layout': {'icon-image': 'JD04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/JD/JD05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD05', image);
+    map.addSource('JD05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.641, 29.397]} }]} });
+    map.addLayer({'id': 'JD05','type': 'symbol','source': 'JD05','layout': {'icon-image': 'JD05', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/JN/JN02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JN02', image);
+    map.addSource('JN02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.092, 37.039]} }]} });
+    map.addLayer({'id': 'JN02','type': 'symbol','source': 'JN02','layout': {'icon-image': 'JN02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/JN/JN03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JN03', image);
+    map.addSource('JN03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.341, 37.161]} }]} });
+    map.addLayer({'id': 'JN03','type': 'symbol','source': 'JN03','layout': {'icon-image': 'JN03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/KS/KS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('KS02', image);
+    map.addSource('KS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [120.908, 31.141]} }]} });
+    map.addLayer({'id': 'KS02','type': 'symbol','source': 'KS02','layout': {'icon-image': 'KS02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/KS/KS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('KS03', image);
+    map.addSource('KS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [120.735, 31.128999999999998]} }]} });
+    map.addLayer({'id': 'KS03','type': 'symbol','source': 'KS03','layout': {'icon-image': 'KS03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/LY/LY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('LY02', image);
+    map.addSource('LY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [111.929, 34.312999999999995]} }]} });
+    map.addLayer({'id': 'LY02','type': 'symbol','source': 'LY02','layout': {'icon-image': 'LY02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/LY/LY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('LY03', image);
+    map.addSource('LY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.086, 34.34799999999999]} }]} });
+    map.addLayer({'id': 'LY03','type': 'symbol','source': 'LY03','layout': {'icon-image': 'LY03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH02', image);
+    map.addSource('SH02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.395, 31.189]} }]} });
+    map.addLayer({'id': 'SH02','type': 'symbol','source': 'SH02','layout': {'icon-image': 'SH02', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH03', image);
+    map.addSource('SH03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.35799999999999, 30.959]} }]} });
+    map.addLayer({'id': 'SH03','type': 'symbol','source': 'SH03','layout': {'icon-image': 'SH03', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH04', image);
+    map.addSource('SH04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.478, 30.871]} }]} });
+    map.addLayer({'id': 'SH04','type': 'symbol','source': 'SH04','layout': {'icon-image': 'SH04', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH05', image);
+    map.addSource('SH05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.314, 30.906]} }]} });
+    map.addLayer({'id': 'SH05','type': 'symbol','source': 'SH05','layout': {'icon-image': 'SH05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH06', image);
+    map.addSource('SH06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.53299999999999, 30.798]} }]} });
+    map.addLayer({'id': 'SH06','type': 'symbol','source': 'SH06','layout': {'icon-image': 'SH06', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH07', image);
+    map.addSource('SH07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.33899999999998, 30.846999999999998]} }]} });
+    map.addLayer({'id': 'SH07','type': 'symbol','source': 'SH07','layout': {'icon-image': 'SH07', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH08', image);
+    map.addSource('SH08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.40499999999999, 30.743]} }]} });
+    map.addLayer({'id': 'SH08','type': 'symbol','source': 'SH08','layout': {'icon-image': 'SH08', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH09', image);
+    map.addSource('SH09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.62199999999999, 30.759999999999998]} }]} });
+    map.addLayer({'id': 'SH09','type': 'symbol','source': 'SH09','layout': {'icon-image': 'SH09', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/SH/SH10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH10', image);
+    map.addSource('SH10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.51199999999999, 30.979999999999997]} }]} });
+    map.addLayer({'id': 'SH10','type': 'symbol','source': 'SH10','layout': {'icon-image': 'SH10', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/WH/WH02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH02', image);
+    map.addSource('WH02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.611, 30.673000000000002]} }]} });
+    map.addLayer({'id': 'WH02','type': 'symbol','source': 'WH02','layout': {'icon-image': 'WH02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/WH/WH03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH03', image);
+    map.addSource('WH03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.387, 30.854000000000003]} }]} });
+    map.addLayer({'id': 'WH03','type': 'symbol','source': 'WH03','layout': {'icon-image': 'WH03', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/WH/WH04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH04', image);
+    map.addSource('WH04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.599, 31.021000000000004]} }]} });
+    map.addLayer({'id': 'WH04','type': 'symbol','source': 'WH04','layout': {'icon-image': 'WH04', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/WH/WH05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH05', image);
+    map.addSource('WH05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.60600000000001, 30.889000000000003]} }]} });
+    map.addLayer({'id': 'WH05','type': 'symbol','source': 'WH05','layout': {'icon-image': 'WH05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/XY/XY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY02', image);
+    map.addSource('XY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.524, 35.113]} }]} });
+    map.addLayer({'id': 'XY02','type': 'symbol','source': 'XY02','layout': {'icon-image': 'XY02', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/XY/XY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY03', image);
+    map.addSource('XY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.749, 34.943]} }]} });
+    map.addLayer({'id': 'XY03','type': 'symbol','source': 'XY03','layout': {'icon-image': 'XY03', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/XY/XY04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY04', image);
+    map.addSource('XY04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.71799999999999, 34.964]} }]} });
+    map.addLayer({'id': 'XY04','type': 'symbol','source': 'XY04','layout': {'icon-image': 'XY04', 'icon-size': {stops: [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('CN/XY/XY05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY05', image);
+    map.addSource('XY05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.67099999999999, 34.821999999999996]} }]} });
+    map.addLayer({'id': 'XY05','type': 'symbol','source': 'XY05','layout': {'icon-image': 'XY05', 'icon-size': {stops: [[1,0],[3, 0.05],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+
+//==================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+
+// Add the label layer
+
+
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink0');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "world": long=39.909; lat=116.456; break; 
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 2,
+					speed: 0.05,
+					pitch: 50
+					});
+			});
+		}
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink1');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "CN": long=116.456; lat=35.909; break;
+                    case "UK": long=-1.121; lat=52.517; break;
+                	case "US": long=-119.378; lat=52.195; break;
+                	case "GLBY": long=-74.905; lat=10.998; break;
+				}
+				map.flyTo({
+					center: [long,lat],
+					zoom: 3,
+					speed: 0.05,
+					pitch: 50
+					});
+			});
+		}
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "Beijing": long=116.456; lat=39.909; break;
+					case "Shanghai": long=121.206; lat=31.101; break;
+					case "Guangzhou": long=113.504; lat=23.251; break;
+                    case "UK": long=-1.121; lat=52.517; break;
+                	case "US": long=-119.378; lat=52.195; break;
+                	case "GLBY": long=-74.905; lat=10.998; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 10,
+					speed: 0.05,
+					pitch: 50
+					});
+			});
+		}
+        
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink2');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "Beijing": long=116.456; lat=39.909; break;
+					case "Shanghai": long=121.206; lat=31.101; break;
+					case "Guangzhou": long=113.504; lat=23.251; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 12,
+					speed: 0.05,
+					pitch: 50
+					});
+			});
+		}
+
+});
+
+</script>
+
+</body>
+</html>
